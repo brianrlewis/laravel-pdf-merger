@@ -41,11 +41,11 @@ class PDFMerger {
     /**
      * The class deconstructor method
      */
-    public function __destruct() {
+    /* public function __destruct() {
       $this->tmpFiles->each(function($filePath) {
           unlink($filePath);
       });
-    }
+    } */
     /**
      * Initialize a new internal instance of FPDI in order to prevent any problems with shared resources
      * Please visit https://www.setasign.com/products/fpdi/manual/#p-159 for more information on this issue
