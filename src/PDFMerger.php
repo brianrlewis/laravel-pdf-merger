@@ -3,17 +3,10 @@
 namespace GrofGraf\LaravelPDFMerger;
 
 use setasign\Fpdi\Fpdi;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class PDFMerger {
-    /**
-     * Access the filesystem on an oop base
-     *
-     * @var Filesystem
-     */
-    protected $filesystem = Filesystem::class;
     /**
      * Hold all the files which will be merged
      *
@@ -38,12 +31,8 @@ class PDFMerger {
      * @var string
      */
     protected $fileName = 'undefined.pdf';
-    /**
-     * Construct and initialize a new instance
-     * @param Filesystem $Filesystem
-     */
-    public function __construct(Filesystem $filesystem){
-        $this->filesystem = $filesystem;
+
+    public function __construct(){
         $this->createDirectoryForTemporaryFiles();
         $this->fpdi = new Fpdi();
         $this->tmpFiles = collect([]);
@@ -53,9 +42,8 @@ class PDFMerger {
      * The class deconstructor method
      */
     public function __destruct() {
-      $filesystem = $this->filesystem;
-      $this->tmpFiles->each(function($filePath) use($filesystem){
-          $filesystem->delete($filePath);
+      $this->tmpFiles->each(function($filePath) {
+          unlink($filePath);
       });
     }
     /**
@@ -89,7 +77,7 @@ class PDFMerger {
      * @return string
      */
     public function save($filePath = null){
-      return $this->filesystem->put($filePath ? $filePath : $this->fileName, $this->string());
+      return file_put_contents($filePath ? $filePath : $this->fileName, $this->string());
     }
     /**
      * Get the merged PDF content as binary string
@@ -119,7 +107,7 @@ class PDFMerger {
      */
     public function addPDFString($string, $pages = 'all', $orientation = null){
         $filePath = $this->getPath('tmp/'.Str::random(16).'.pdf');
-        $this->filesystem->put($filePath, $string);
+        file_put_contents($filePath, $string);
         $this->tmpFiles->push($filePath);
         return $this->addPathToPDF($filePath, $pages, $orientation);
     }
@@ -226,8 +214,8 @@ class PDFMerger {
      */
     protected function createDirectoryForTemporaryFiles(): void
     {
-        if (! $this->filesystem->isDirectory($this->getPath('tmp'))) {
-            $this->filesystem->makeDirectory($this->getPath('tmp'));
+        if (! is_dir ($this->getPath('tmp'))) {
+            mkdir($this->getPath('tmp'));
         }
     }
 
