@@ -33,6 +33,7 @@ class PDFMerger {
     protected $fileName = 'undefined.pdf';
 
     public function __construct(){
+      slog('pdf-merger-1');
         $this->createDirectoryForTemporaryFiles();
         $this->fpdi = new Fpdi();
         $this->tmpFiles = collect([]);
@@ -41,11 +42,11 @@ class PDFMerger {
     /**
      * The class deconstructor method
      */
-    /* public function __destruct() {
+    public function __destruct() {
       $this->tmpFiles->each(function($filePath) {
-          unlink($filePath);
+          @unlink($filePath);
       });
-    } */
+    }
     /**
      * Initialize a new internal instance of FPDI in order to prevent any problems with shared resources
      * Please visit https://www.setasign.com/products/fpdi/manual/#p-159 for more information on this issue
