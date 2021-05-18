@@ -33,7 +33,6 @@ class PDFMerger {
     protected $fileName = 'undefined.pdf';
 
     public function __construct(){
-      slog('pdf-merger-1');
         $this->createDirectoryForTemporaryFiles();
         $this->fpdi = new Fpdi();
         $this->tmpFiles = collect([]);
